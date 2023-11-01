@@ -1,0 +1,29 @@
+Nume: Petrea Octavian
+Email: octavian.petrea@stud.acs.upb.ro
+Grupa: 313 CA
+
+	Structuri de date si algoritmi - TEMA 1
+
+Fisierul main.c contine o singura functie, cea de main. In aceasta am implementat un switch case cu ajutorul caruia mi-am separat operatiile in functii.
+
+Fisierul vma.c contine functiile pentru implementarea listelor simplu inlantuite, realizata in cadrul laboratorului, la care am adaugat tail-ul listei, de care m-am folosit in cadrul realizarii operatiilor.
+
+Functia "alloc_arena" imi aloca efectiv arena in functie de size-ul pe care il citesc de la tastatura si il trimit ca parametru
+
+Functia "dealloc_arena" pe de alta parte, dealoca bufferele alocate dinamic (daca este cazul) din listele de miniblocuri, listele de miniblocuri si datele din acestea, dar si listele de blocuri si datele din acestea. In final, se dealoca arena.
+
+Functia "alloc_block" este cea pentru care se aloca un block sau un miniblock in functie de caz. Am inceput implementarea operatiei prin realizarea unei functii prin care sa testez daca adresa la care vreau sa adaug un block este sau nu valida. Dupa care, am iterat prin lista de blockuri si depistez daca pot lipi acest miniblock la inceputul sau sfarsitul unui bloc existent. In caz contrar, acesta va fi un block independent ce va contine un singur miniblock. Totusi, daca am lipit miniblock-ul, decid daca block-ul cu noi dimensiuni poate sa fie lipit la randul lui de un alt block din lista. Pentru asta m-am folosit de functia "concat_blocks". In cazul in care pot sa concatenez doua blocuri, adaug fiecare miniblock din block la block-ul de care il lipesc, dupa care eliberez memoria blocului ce a fost concatenat.
+
+Functia "free_block" itereaza prin lista de blocuri si cea de miniblocuri pana cand ajunge la adresa de la care se doreste eliberarea unui block (sau miniblock). Daca miniblock-ul eliminat nu se afla la inceputul sau la sfarsitul listei, atunci este necesar sa sparg blocul curent in doua blocuri. Astfel, adaug in lista de blocuri un nou nod imediat dupa nodul blocului spart. Modific adresele corespunzator, transfer miniblocurile dintr-un block in altul si le sterg din miniblocul din care au fost trasnferate.
+
+Functia "read" realizeaza citirea de la o anumita adresa. Astfel, am inceput 	prin a itera lista de blocuri si a observa 3 lucruri:
+	1) daca adresa citita este una valida pentru citire
+	2) daca am permisiunile necesare
+	3) in cazul in care numarul de caractere pe care vreau sa le citesc depaseste sizeul blocului in care ar trebui sa fac citirea, sa retin in variabila written, numarul de caractere pe care as putea sa le citesc.
+In cazul in care primele 2 conditii sunt respectate, realizez citirea efectiva cu ajutorul functiei "read_in_bl".
+
+Functia "write" este foarte asemanatoare cu cea de read si foloseste in mare acelasi principiu. Se foloseste de doua functii: "can_i_write" si "write_in_block", singura diferenta semnificativa fiind fapul ca scrierea se realizeaza initial intr-un string, din care copiez in bufferele miniblockurilor.
+
+Functia "pmap" realizeaza afisarea.
+
+Functia "mprotect" se foloseste de o functie de convertire a comenzii din text, intr-un intreg prin care sa deduc mai usor efectiv ce tip de permisiuni ar trebui sa aiba portiunea respectiva de memorie. Pentru asta m-am folosit de o functie "convert_permission", cu care am parsat inputul cu ajutorul lui strtok. Iterez lista de blocuri in cautarea adresei la care trebuie sa modific permisiunile, iar in cazul in care nu o gasesc o sa afisez un mesaj corespunzator.

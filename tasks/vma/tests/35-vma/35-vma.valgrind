@@ -1,0 +1,15 @@
+==91971== Memcheck, a memory error detector
+==91971== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==91971== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
+==91971== Command: /home/student/Desktop/tema1_sda/sd-2023-homeworks/vma
+==91971== Parent PID: 91970
+==91971== 
+==91971== 
+==91971== HEAP SUMMARY:
+==91971==     in use at exit: 0 bytes in 0 blocks
+==91971==   total heap usage: 92,688 allocs, 92,688 frees, 2,596,936 bytes allocated
+==91971== 
+==91971== All heap blocks were freed -- no leaks are possible
+==91971== 
+==91971== For lists of detected and suppressed errors, rerun with: -s
+==91971== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

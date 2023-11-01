@@ -146,10 +146,17 @@ def check_readme(config):
 
     log('+++++ running check_readme ({:g}p) ...'.format(config.penalty_readme))
 
-    readme = pathlib.Path('README')
+
+    readme_files = [pathlib.Path('README.md'), pathlib.Path('README')]
+    readme = None
+    for readme_file in readme_files:
+        if readme_file.is_file():
+            readme = readme_file
+            break
+
     readme_points = 0
-    if not readme.is_file():
-        reason = '\'{}\' is missing!'.format(readme.name)
+    if readme == None:
+        reason = '\'README or README.md\' is missing!'
         log(reason)
         update_grade_vmr(config, -config.penalty_readme, reason)
     elif readme.stat().st_size == 0:
@@ -196,8 +203,7 @@ def check_style(config):
         reason = 'Coding style errors automatically detected.'
         update_grade_vmr(config, -config.coding_style, reason)
     else:
-        coding_style_grade = (1.0 * max(min(config.grade, 70), 0) /
-                              (config.tests_points - 20)) * config.coding_style
+        coding_style_grade = min(max(config.grade, 0), 80) / 80 * config.coding_style
         if coding_style_grade < config.coding_style:
 
             reason = 'No coding style errors automatically detected (tests points {}/{})'.format(config.grade, config.tests_points)
@@ -205,9 +211,10 @@ def check_style(config):
         else:
             reason = 'No coding style errors automatically detected. Final points are given after manual grading.'
             update_grade_vmr(config, 0, reason)
+        config.grade += max(0, min(coding_style_grade, config.coding_style))
+
 
     should_play_sound = config.grade == config.tests_points and coding_style_grade < config.coding_style
-    config.grade += coding_style_grade
 
     log('{}\n'.format(extract_stdout(child)))
 
@@ -219,8 +226,6 @@ def check_style(config):
         coding_style_grade, config.coding_style))
 
     return 0
-
-
 def run_test(task, test, use_valgrind=False, ):
     indent_log()
     stage_name = 'test' if not use_valgrind else 'valgrind'
@@ -230,7 +235,8 @@ def run_test(task, test, use_valgrind=False, ):
     if not use_valgrind:
         # man timeout: 124 if command times out
         expected_error_code = 124
-        cmd = f"make run_{task.id}"
+
+        cmd = '{}'.format(task.binary)
     else:
         # choose an error to be returned by valgrind
         expected_error_code = 69
@@ -246,14 +252,13 @@ def run_test(task, test, use_valgrind=False, ):
     set_mem_bytes(task.memory)
 
     try:
-        child = subprocess.run(['make', '-s', f'run_{task.id}'], shell=False if not use_valgrind else True,
+        child = subprocess.run(cmd, shell=False if not use_valgrind else True,
                                stdin=open(
                                    test.input, 'r') if task.use_stdin else subprocess.DEVNULL,
                                stdout=open(
                                    test.output, 'w') if task.use_stdout else subprocess.DEVNULL,
                                stderr=subprocess.PIPE,
                                timeout=task.timeout if not use_valgrind else 500,
-                               cwd=os.getcwd(),
                                preexec_fn=limit_process_memory if task.memory and not use_valgrind else None,
                                )
     except subprocess.TimeoutExpired as e:

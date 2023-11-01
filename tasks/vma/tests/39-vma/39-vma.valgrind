@@ -1,0 +1,15 @@
+==92228== Memcheck, a memory error detector
+==92228== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==92228== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
+==92228== Command: /home/student/Desktop/tema1_sda/sd-2023-homeworks/vma
+==92228== Parent PID: 92227
+==92228== 
+==92228== 
+==92228== HEAP SUMMARY:
+==92228==     in use at exit: 0 bytes in 0 blocks
+==92228==   total heap usage: 3,070 allocs, 3,070 frees, 118,642 bytes allocated
+==92228== 
+==92228== All heap blocks were freed -- no leaks are possible
+==92228== 
+==92228== For lists of detected and suppressed errors, rerun with: -s
+==92228== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
